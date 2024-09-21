@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaAngleRight, FaAngleLeft } from "react-icons/fa6";
+import { IoMdArrowUp } from "react-icons/io";
 
 // Product data
 const products = [
@@ -28,25 +29,25 @@ const slideProducts = [
     {
         imgUrl: "https://printify.com/pfh/assets/legacy/custom-products.png",
         heading1: "CREATE",
-        heading2: "Best Selection",
-        para: "Gain access to a wide variety of products from the top print providers to meet your customers' needs."
+        heading2: "Custom Products",
+        para: "easily add your design to a wide range of products using our free tools"
     },
     {
         imgUrl: "https://printify.com/pfh/assets/legacy/your-products.png",
         heading1: "SELL",
-        heading2: "Best Selection",
-        para: "Gain access to a wide variety of products from the top print providers to meet your customers' needs."
+        heading2: "On Your Team",
+        para: "You chose the products,sales price and where to sell."
     },
     {
         imgUrl: "https://printify.com/pfh/assets/legacy/fullfillment.png",
         heading1: "WE HANDLE",
-        heading2: "Best Selection",
-        para: "Gain access to a wide variety of products from the top print providers to meet your customers' needs."
+        heading2: "Fulfillment",
+        para: "Once an order is placed. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam, quidem "
     }
 ];
 
 // Slide Component for Mobile
-const Slide = ({ imgUrl, heading1,heading2, para }) => (
+const Slide = ({ imgUrl, heading1, heading2, para }) => (
     <div className="flex flex-col items-center text-center w-full transition-opacity duration-500">
         <div className="w-40 h-40 mb-4">
             <img src={imgUrl} alt={heading1} className="w-full h-full object-contain" />
@@ -60,6 +61,32 @@ const Slide = ({ imgUrl, heading1,heading2, para }) => (
 function ProductDisplay() {
     const [hoveredProduct, setHoveredProduct] = useState(null);
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+    const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY;
+            // Show the button only when the user has scrolled past the ProductDisplay component
+            if (scrollPosition > 450) {
+                setShowScrollToTop(true);
+            }
+            else {
+                setShowScrollToTop(false)
+            }
+
+
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // Handle slide change with animation
     const changeSlide = (direction) => {
@@ -72,6 +99,13 @@ function ProductDisplay() {
 
     return (
         <div className='bg-slate-100 flex flex-col'>
+            {
+                showScrollToTop && (
+                    <div className={` z-50 border-2 border-slate-500 fixed bottom-7 right-3 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer`} onClick={scrollToTop}>
+                        {/* <span class="arrow">↑</span> */}<IoMdArrowUp />
+                    </div>
+                )
+            }
             {/* Display Products Side by Side on Larger Screens */}
             <div className="flex flex-col md:flex-row px-4 md:px-40 py-14">
                 <div className="relative bg-green-500 md:h-[600px] h-[250px] md:w-[40%] rounded-2xl">

@@ -4,6 +4,7 @@ import ProductDisplay from "./components/ProductDisplay"
 import Integrations from "./components/Integrations"
 import TestimonialSlider from "./components/TestimonialSlider"
 import CallToAction from "./components/CallToAction"
+import Footer from "./components/Footer"
 
 function App() {
 
@@ -15,9 +16,8 @@ function App() {
       <Integrations />
       <TestimonialSlider />
       <CallToAction />
+      <Footer />
     </>
-
-
   )
 }
 
