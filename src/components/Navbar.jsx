@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoLogoDesignernews } from 'react-icons/io';
 import { FaSortDown, FaSortUp } from "react-icons/fa";
@@ -7,6 +7,20 @@ import { RxCross1 } from 'react-icons/rx';
 function Navbar() {
     const [sideBar, setSideBar] = useState(false);
     const [openSection, setOpenSection] = useState(null); // To track which section is open
+
+    const closeNavLinks = useRef()
+    const handleClickOutside = (event) => {
+        if (closeNavLinks.current && !closeNavLinks.current.contains(event.target)) {
+            setOpenSection(null);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside, true);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, []);
 
     // Handler to toggle sidebar visibility
     const toggleSidebar = (state) => setSideBar(state);
@@ -63,12 +77,47 @@ function Navbar() {
                     className="hamburger text-2xl cursor-pointer"
                     aria-label="Open Sidebar"
                 >
-                    <GiHamburgerMenu />
+                    <GiHamburgerMenu className='lg:hidden' />
                 </div>
-                <div className="logo text-2xl">
+                <div className="logo text-2xl flex gap-2 items-center">
                     <IoLogoDesignernews />
+                    <h1 className='md:flex hidden'>MyLogo</h1>
                 </div>
             </div>
+            <ul className=" gap-4 hidden lg:flex">
+                {menuItems.map((menuItem, index) => (
+                    <li key={index} className='relative'>
+                        {/* Check if the item has sub-links */}
+                        {menuItem.links.length > 1 ? (
+                            <>
+                                <div
+                                    onClick={() => toggleSection(menuItem.title)}
+                                    className="flex justify-between items-center text-gray-800 cursor-pointer"
+                                >
+                                    <span className="text-lg">{menuItem.title}</span>
+                                    <span>{openSection === menuItem.title ? <FaSortUp /> : <FaSortDown />}</span>
+                                </div>
+                                {openSection === menuItem.title && (
+                                    <ul ref={closeNavLinks} className="z-50 border-2 border-slate-300 absolute mt-4 p-2 text-gray-700 flex min-w-[135px] gap-1 m-h-[65px] flex-wrap">
+                                        {menuItem.links.map((link, i) => (
+                                            <li key={i}>
+                                                <a href={link.href} className="hover:text-green-500">
+                                                    {link.text}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </>
+                        ) : (
+                            <a href={menuItem.links[0].href} className="text-gray-800 hover:text-gray-600 text-lg">
+                                {menuItem.title}
+                            </a>
+                        )}
+                    </li>
+                ))}
+            </ul>
+
 
             {/* Right section with Login and Sign-up buttons */}
             <div className="rightBox flex gap-2">

@@ -1,11 +1,15 @@
-
+import HeroSection from "./components/HeroSection"
+import Features from "./components/Features"
 
 function App() {
- 
+
   return (
-  <div>
-          
-  </div>
+    <>
+      <HeroSection />
+      <Features />
+    </>
+
+
   )
 }
 
